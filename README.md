@@ -125,29 +125,6 @@
 - Change to `greeter-session=lightdm-webkit2-greeter` in /etc/lightdm/lightdm.conf
 - Change to `user-session=bspwm` in /etc/lightdm/lightdm.conf
 
-### Setting ZSH
-
-- sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-- Set `source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh` in ~/.zshrc
-- Change to `ZSH_THEME="powerlevel10k/powerlevel10k"` in ~/.zshrc
-- Set
-
-```
-# Aliases
-alias ls="lsd"
-alias cat="bat"
-alias target="$HOME/.config/scripts/target/target.sh"
-alias untarget="$HOME/.config/scripts/target/untarget.sh"
-```
-
-in ~/.zshrc
-
-### Setting Kitty
-
-- mkdir -p ~/.config/kitty && cp /usr/share/doc/kitty/kitty.conf ~/.config/kitty/
-- Change to `background #222222` in ~/.config/kitty/kitty.conf
-- Change to `background_opacity 0.98` in ~/.config/kitty/kitty.conf
-
 ### Setting BSPWM
 
 - mkdir ~/.config/bspwm && cp /usr/share/doc/bspwm/examples/bspwmrc ~/.config/bspwm/
@@ -183,6 +160,10 @@ in ~/.config/bspwm/bspwmrc
 super + shift + f
     /usr/bin/firefox
 
+# chromium
+super + shift + g
+    /usr/bin/chromium
+
 # i3lock
 super + shift + x
     /usr/bin/i3lock
@@ -190,13 +171,32 @@ super + shift + x
 # scrot
 super + shift + s
     /usr/bin/scrot -s '/tmp/screenshot_%Y-%m-%d_%H-%M-%S.png' -e 'mv $f /tmp/screenshot.png' && xclip -selection clipboard -t image/png -i /tmp/screenshot.png
-
-# chromium
-super + shift + g
-    /usr/bin/chromium
 ```
 
 in ~/.config/sxhkd/sxhkdrc
+
+### Setting Kitty
+
+- mkdir -p ~/.config/kitty && cp /usr/share/doc/kitty/kitty.conf ~/.config/kitty/
+- Change to `background #222222` in ~/.config/kitty/kitty.conf
+- Change to `background_opacity 0.98` in ~/.config/kitty/kitty.conf
+
+### Setting ZSH
+
+- sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+- Set `source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh` in ~/.zshrc
+- Change to `ZSH_THEME="powerlevel10k/powerlevel10k"` in ~/.zshrc
+- Set
+
+```
+# Aliases
+alias ls="lsd"
+alias cat="bat"
+alias target="$HOME/.config/scripts/target/target.sh"
+alias untarget="$HOME/.config/scripts/target/untarget.sh"
+```
+
+in ~/.zshrc
 
 ### Setting Powerlevel10k
 
