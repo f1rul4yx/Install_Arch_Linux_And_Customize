@@ -88,7 +88,11 @@
 
 ### Install Essential Packages
 
-- pacman -S networkmanager grub efibootmgr
+- pacman -S networkmanager grub efibootmgr nano sudo
+
+### Sudoers File Configuration
+
+- Set `{Username} ALL=(ALL:ALL) ALL` in /etc/sudoers
 
 ### Install and Configure GRUB
 
@@ -103,7 +107,8 @@
 
 ### Enable NetworkManager
 
-- sudo systemctl enable networkmanager
+- sudo systemctl enable NetworkManager
+- sudo systemctl start NetworkManager
 - nmcli radio wifi on
 - nmcli dev wifi list
 - nmcli dev wifi connect {SSID} password {password} ifname {NetworkCard}
@@ -112,7 +117,7 @@
 
 ### Install Packages
 
-- sudo pacman -S git curl p7zip zsh zsh-syntax-highlighting kitty bspwm sxhkd polybar picom dmenu feh i3lock scrot xclip gcc make perl bat lsd lightdm lightdm-webkit2-greeter nano
+- sudo pacman -S git p7zip zsh zsh-syntax-highlighting kitty bspwm sxhkd polybar picom dmenu feh i3lock scrot xclip bat lsd lightdm lightdm-webkit2-greeter
 
 ### Setting Lightdm
 
@@ -131,21 +136,21 @@
 # Aliases
 alias ls="lsd"
 alias cat="bat"
-alias target="/home/diego/.config/scripts/target/target.sh"
-alias untarget="/home/diego/.config/scripts/target/untarget.sh"
+alias target="$HOME/.config/scripts/target/target.sh"
+alias untarget="$HOME/.config/scripts/target/untarget.sh"
 ```
 
 in ~/.zshrc
 
 ### Setting Kitty
 
-- mkdir ~/.config/kitty && cp /usr/share/doc/kitty/kitty.conf ~/.config/kitty/
+- mkdir -p ~/.config/kitty && cp /usr/share/doc/kitty/kitty.conf ~/.config/kitty/
 - Change to `background #222222` in ~/.config/kitty/kitty.conf
 - Change to `background_opacity 0.98` in ~/.config/kitty/kitty.conf
 
 ### Setting BSPWM
 
-- mkdir ~/.config/bspwm && cp /usr/share/doc/bspwm/examples/bspwmrc ~/.config/bspwm/ && chmod +x ~/.config/bspwm/bspwmrc
+- mkdir ~/.config/bspwm && cp /usr/share/doc/bspwm/examples/bspwmrc ~/.config/bspwm/
 - Change to `bspc monitor -d 1 2 3 4 5 6 7 8 9 10` in ~/.config/bspwm/bspwmrc
 - Change to `bspc config border_width 0` in ~/.config/bspwm/bspwmrc
 - Set
@@ -245,7 +250,26 @@ signal = 10
 
 in ~/.config/polybar/config.ini
 
-- Change to `modules-right = filesystem pulseaudio xkeyboard memory cpu battery wlan eth target_ip date` in ~/.config/polybar/config.ini
+- Change to
+
+```
+modules-left = xworkspaces
+modules-right = filesystem pulseaudio xkeyboard memory cpu battery wlan eth target_ip date
+```
+
+in ~/.config/polybar/config.ini
+
+- Change to
+
+```
+[module/wlan]
+inherit = network-base
+interface-type = wireless
+interface = {NetworkCard}
+label-connected = %{F#F0C674}%ifname%%{F-} %local_ip%
+```
+
+in ~/.config/polybar/config.ini
 
 ### Setting Picom
 
@@ -258,7 +282,7 @@ in ~/.config/polybar/config.ini
 
 ### Setting Target
 
-- mkdir -p ~/.config/scripts/target && touch ~/.config/scripts/target/target.sh && touch ~/.config/scripts/target/untarget.sh && chmod +x ~/.config/scripts/target/\*
+- mkdir -p ~/.config/scripts/target && touch ~/.config/scripts/target/target.sh && touch ~/.config/scripts/target/untarget.sh && chmod +x ~/.config/scripts/target/*
 - Set
 
 ```
@@ -274,7 +298,7 @@ if [[ ! "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   return 1
 fi
 
-echo "$1" > /home/diego/.config/scripts/target/target_ip
+echo "$1" > $HOME/.config/scripts/target/target_ip
 pkill -USR1 polybar
 ```
 
@@ -285,7 +309,7 @@ in ~/.config/scripts/target/target.sh
 ```
 #!/bin/zsh
 
-echo "~" > /home/diego/.config/scripts/target/target_ip
+echo "~" > $HOME/.config/scripts/target/target_ip
 pkill -USR1 polybar
 ```
 
@@ -313,8 +337,6 @@ in ~/.config/scripts/target/untarget.sh
 # Aliases
 alias ls="lsd"
 alias cat="bat"
-alias target="/home/diego/.config/scripts/target/target.sh"
-alias untarget="/home/diego/.config/scripts/target/untarget.sh"
 ```
 
 in ~/.zshrc
@@ -325,15 +347,18 @@ in ~/.zshrc
 
 ## OTHER SOFTWARE
 
+- base-devel - Development tools and libraries
 - Chromium - Web browsing
 - Code (Visual Studio Code) - Source code editing
+- Firefox - Web browsing
 - GIMP (GNU Image Manipulation Program) - Image and graphics editing
-- Kdenlive - Video editing
 - KeePass - Password management
+- Kdenlive - Video editing
 - Neofetch - Displaying system information
 - Pavucontrol - Audio control
 - PipeWire - Audio and video management
 - qBittorrent - Torrent file downloading
 - Thunar - File management
+- Timeshift - System backup and restore
 - VLC (VLC media player) - Media file playback
 - xrandr - Display configuration
