@@ -103,7 +103,8 @@
 
 ### Install Packages
 
-- su {Username} && cd
+- su {Username}
+- cd
 - sudo pacman -S git p7zip zsh zsh-syntax-highlighting kitty bspwm sxhkd polybar picom dmenu feh i3lock scrot xclip bat lsd lightdm lightdm-webkit2-greeter
 
 ### Setting Lightdm
@@ -178,7 +179,8 @@ in ~/.config/sxhkd/sxhkdrc
 
 ### Exit Chroot and Reboot
 
-- exit && exit
+- exit
+- exit
 - umount -R /mnt
 - reboot
 
@@ -336,7 +338,8 @@ in ~/.config/scripts/target/untarget.sh
 
 ### Setting ZSH
 
-- sudo su && cd
+- sudo su
+- cd
 - sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 - Set `source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh` in ~/.zshrc
 - Change to `ZSH_THEME="powerlevel10k/powerlevel10k"` in ~/.zshrc
@@ -371,4 +374,4 @@ in ~/.zshrc
 - Thunar - File management
 - Timeshift - System backup and restore
 - VLC (VLC media player) - Media file playback
-- xrandr - Display configuration (RECOMMENDED)
+- xorg-xrandr - Display configuration (RECOMMENDED)
