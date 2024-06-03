@@ -57,6 +57,10 @@
 
 - arch-chroot /mnt
 
+### Install Essential Packages
+
+- pacman -S networkmanager grub efibootmgr nano sudo
+
 ### Set Timezone and Clock
 
 - ln -sf /usr/share/zoneinfo/{Continent}/{City} /etc/localtime
@@ -86,10 +90,6 @@
 - useradd -m -s /bin/bash {Username}
 - passwd {Username}
 
-### Install Essential Packages
-
-- pacman -S networkmanager grub efibootmgr nano sudo
-
 ### Sudoers File Configuration
 
 - Set `{Username} ALL=(ALL:ALL) ALL` in /etc/sudoers
@@ -99,24 +99,11 @@
 - grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 - grub-mkconfig -o /boot/grub/grub.cfg
 
-### Exit Chroot and Reboot
-
-- exit
-- umount -R /mnt
-- reboot
-
-### Enable NetworkManager
-
-- sudo systemctl enable NetworkManager
-- sudo systemctl start NetworkManager
-- nmcli radio wifi on
-- nmcli dev wifi list
-- nmcli dev wifi connect {SSID} password {password} ifname {NetworkCard}
-
 ## INSTALL GRAPHICAL ENVIRONMENT
 
 ### Install Packages
 
+- su {Username} && cd
 - sudo pacman -S git p7zip zsh zsh-syntax-highlighting kitty bspwm sxhkd polybar picom dmenu feh i3lock scrot xclip bat lsd lightdm lightdm-webkit2-greeter
 
 ### Setting Lightdm
@@ -127,16 +114,16 @@
 
 ### Setting BSPWM
 
-- mkdir ~/.config/bspwm && cp /usr/share/doc/bspwm/examples/bspwmrc ~/.config/bspwm/
+- mkdir -p ~/.config/bspwm && cp /usr/share/doc/bspwm/examples/bspwmrc ~/.config/bspwm/
 - Change to `bspc monitor -d 1 2 3 4 5 6 7 8 9 10` in ~/.config/bspwm/bspwmrc
 - Change to `bspc config border_width 0` in ~/.config/bspwm/bspwmrc
 - Set
 
 ```
+setxkbmap -layout es
 $HOME/.config/polybar/launch.sh
 picom &
 feh --bg-scale $HOME/.config/wallpapers/wallpaper.png
-setxkbmap -layout es
 xrandr -s 1920x1080 -r 60
 ```
 
@@ -171,15 +158,37 @@ super + shift + x
 # scrot
 super + shift + s
     /usr/bin/scrot -s '/tmp/screenshot_%Y-%m-%d_%H-%M-%S.png' -e 'mv $f /tmp/screenshot.png' && xclip -selection clipboard -t image/png -i /tmp/screenshot.png
+
+# pactl +
+super + shift + p
+    pactl set-sink-volume @DEFAULT_SINK@ +1%
+
+# pactl -
+super + shift + o
+    pactl set-sink-volume @DEFAULT_SINK@ -1%
 ```
 
 in ~/.config/sxhkd/sxhkdrc
 
 ### Setting Kitty
 
-- mkdir -p ~/.config/kitty && cp /usr/share/doc/kitty/kitty.conf ~/.config/kitty/
+- mkdir ~/.config/kitty && cp /usr/share/doc/kitty/kitty.conf ~/.config/kitty/
 - Change to `background #222222` in ~/.config/kitty/kitty.conf
 - Change to `background_opacity 0.98` in ~/.config/kitty/kitty.conf
+
+### Exit Chroot and Reboot
+
+- exit && exit
+- umount -R /mnt
+- reboot
+
+### Enable NetworkManager
+
+- sudo systemctl enable NetworkManager
+- sudo systemctl start NetworkManager
+- nmcli radio wifi on
+- nmcli dev wifi list
+- nmcli dev wifi connect {SSID} password {password} ifname {NetworkCard}
 
 ### Setting ZSH
 
@@ -282,7 +291,7 @@ in ~/.config/polybar/config.ini
 
 ### Setting Target
 
-- mkdir -p ~/.config/scripts/target && touch ~/.config/scripts/target/target.sh && touch ~/.config/scripts/target/untarget.sh && chmod +x ~/.config/scripts/target/*
+- mkdir -p ~/.config/scripts/target && touch ~/.config/scripts/target/target.sh && touch ~/.config/scripts/target/untarget.sh && chmod +x ~/.config/scripts/target/\*
 - Set
 
 ```
@@ -321,13 +330,13 @@ in ~/.config/scripts/target/untarget.sh
 - 7z x Vimix-1080p.tar.xz && 7z x Vimix-1080p.tar && sudo mv Vimix-1080p/Vimix /boot/grub/themes/
 - Change to `GRUB_THEME="/boot/grub/themes/Vimix/theme.txt"` in /etc/default/grub
 - Change to `GRUB_GFXMODE=1920x1080` in /etc/default/grub
-- Change to `GRUB_GFXPAYLOAD_LINUX=keep` in /etc/default/grub
 - sudo grub-mkconfig -o /boot/grub/grub.cfg
 
 ## INSTALL THE GRAPHIC ENVIRONMENT WITH SUDO
 
 ### Setting ZSH
 
+- sudo su && cd
 - sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 - Set `source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh` in ~/.zshrc
 - Change to `ZSH_THEME="powerlevel10k/powerlevel10k"` in ~/.zshrc
@@ -348,17 +357,18 @@ in ~/.zshrc
 ## OTHER SOFTWARE
 
 - base-devel - Development tools and libraries
-- Chromium - Web browsing
+- Chromium - Web browsing (RECOMMENDED)
 - Code (Visual Studio Code) - Source code editing
-- Firefox - Web browsing
+- Firefox - Web browsing (RECOMMENDED)
 - GIMP (GNU Image Manipulation Program) - Image and graphics editing
 - KeePass - Password management
 - Kdenlive - Video editing
 - Neofetch - Displaying system information
 - Pavucontrol - Audio control
 - PipeWire - Audio and video management
+- pulseaudio - Sound server (RECOMMENDED)
 - qBittorrent - Torrent file downloading
 - Thunar - File management
 - Timeshift - System backup and restore
 - VLC (VLC media player) - Media file playback
-- xrandr - Display configuration
+- xrandr - Display configuration (RECOMMENDED)
