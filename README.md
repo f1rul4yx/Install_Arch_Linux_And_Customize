@@ -105,7 +105,7 @@
 
 - su {Username}
 - cd
-- sudo pacman -S git p7zip zsh zsh-syntax-highlighting kitty bspwm sxhkd polybar picom dmenu feh i3lock scrot xclip bat lsd lightdm lightdm-webkit2-greeter
+- sudo pacman -S git p7zip zsh zsh-syntax-highlighting kitty bspwm sxhkd polybar picom dmenu bat lsd lightdm lightdm-webkit2-greeter
 
 ### Setting Lightdm
 
@@ -175,7 +175,9 @@ in ~/.config/sxhkd/sxhkdrc
 
 - mkdir ~/.config/kitty && cp /usr/share/doc/kitty/kitty.conf ~/.config/kitty/
 - Change to `background #222222` in ~/.config/kitty/kitty.conf
-- Change to `background_opacity 0.98` in ~/.config/kitty/kitty.conf
+- Change to `background_opacity 0.85` in ~/.config/kitty/kitty.conf
+- Change to `window_padding_width 20` in ~/.config/kitty/kitty.conf
+- Change to `cursor_shape beam` in ~/.config/kitty/kitty.conf
 
 ### Exit Chroot and Reboot
 
@@ -286,6 +288,8 @@ in ~/.config/polybar/config.ini
 
 - mkdir ~/.config/picom && cp /usr/share/doc/picom/picom.conf.example ~/.config/picom/picom.conf
 - Change to `vsync = false;` in ~/.config/picom/picom.conf
+- Change to `shadow = false;` in ~/.config/picom/picom.conf
+- Change to `corner-radius = 15` in ~/.config/picom/picom.conf
 
 ### Setting Feh
 
@@ -310,7 +314,6 @@ if [[ ! "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
 fi
 
 echo "$1" > $HOME/.config/scripts/target/target_ip
-pkill -USR1 polybar
 ```
 
 in ~/.config/scripts/target/target.sh
@@ -321,7 +324,6 @@ in ~/.config/scripts/target/target.sh
 #!/bin/zsh
 
 echo "~" > $HOME/.config/scripts/target/target_ip
-pkill -USR1 polybar
 ```
 
 in ~/.config/scripts/target/untarget.sh
@@ -360,18 +362,21 @@ in ~/.zshrc
 ## OTHER SOFTWARE
 
 - base-devel - Development tools and libraries
-- Chromium - Web browsing (RECOMMENDED)
-- Code (Visual Studio Code) - Source code editing
-- Firefox - Web browsing (RECOMMENDED)
-- GIMP (GNU Image Manipulation Program) - Image and graphics editing
-- KeePass - Password management
-- Kdenlive - Video editing
-- Neofetch - Displaying system information
-- Pavucontrol - Audio control
-- PipeWire - Audio and video management
+- chromium - Web browsing (RECOMMENDED)
+- code - Source code editing
+- feh - Image viewer and background setter (RECOMMENDED)
+- firefox - Web browsing (RECOMMENDED)
+- gimp - Image and graphics editing
+- i3lock - Screen locking (RECOMMENDED)
+- keepass - Password management
+- kdenlive - Video editing
+- neofetch - Displaying system information
+- pavucontrol - Audio control
 - pulseaudio - Sound server (RECOMMENDED)
-- qBittorrent - Torrent file downloading
-- Thunar - File management
-- Timeshift - System backup and restore
-- VLC (VLC media player) - Media file playback
+- qbittorrent - Torrent file downloading
+- scrot - Screenshot tool (RECOMMENDED)
+- thunar - File management
+- timeshift - System backup and restore
+- vlc - Media file playback
+- xclip - Clipboard manager (RECOMMENDED)
 - xorg-xrandr - Display configuration (RECOMMENDED)
