@@ -116,7 +116,7 @@
 ### Setting BSPWM
 
 - mkdir -p ~/.config/bspwm && cp /usr/share/doc/bspwm/examples/bspwmrc ~/.config/bspwm/
-- Change to `bspc monitor -d 1 2 3 4 5 6 7 8 9 10` in ~/.config/bspwm/bspwmrc
+- Change to `bspc monitor -d          ` in ~/.config/bspwm/bspwmrc
 - Change to `bspc config border_width 0` in ~/.config/bspwm/bspwmrc
 - Set
 
@@ -135,7 +135,7 @@ in ~/.config/bspwm/bspwmrc
 - mkdir ~/.config/sxhkd && cp /usr/share/doc/bspwm/examples/sxhkdrc ~/.config/sxhkd/
 - Change to `/usr/bin/kitty` in ~/.config/sxhkd/sxhkdrc
 - Change to `super + shift + m` in ~/.config/sxhkd/sxhkdrc
-- Change to `/usr/bin/dmenu_run -b -i -nb "#222" -nf "#fff"` in ~/.config/sxhkd/sxhkdrc
+- Change to `/usr/bin/dmenu_run -b -i -nb "#222222" -nf "#ffffff" -sb "#9b59b6" -sf "#ffffff"` in ~/.config/sxhkd/sxhkdrc
 - Change to `Left,Down,Up,Right` in ~/.config/sxhkd/sxhkdrc
 - Set
 
@@ -220,24 +220,19 @@ in ~/.zshrc
 
 ### Setting Polybar
 
-- mkdir ~/.config/polybar && cp /usr/share/doc/polybar/examples/config.ini ~/.config/polybar/
+- mkdir ~/.config/polybar && touch ~/.config/polybar/config.ini
 - touch ~/.config/polybar/launch.sh && chmod +x ~/.config/polybar/launch.sh
+- mkdir -p ~/.config/scripts/target && touch ~/.config/scripts/target/target.sh && touch ~/.config/scripts/target/untarget.sh && chmod +x ~/.config/scripts/target/\*
+- mkdir ~/.config/scripts/connection && touch ~/.config/scripts/connection/wlan.sh && touch ~/.config/scripts/connection/eth.sh && touch ~/.config/scripts/connection/htb.sh && chmod +x ~/.config/scripts/connection/\*
+- mkdir ~/.config/scripts/battery && touch ~/.config/scripts/battery/battery.sh && chmod +x ~/.config/scripts/battery/\*
 - Set
 
 ```
-#!/usr/bin/env bash
+#!/bin/bash
 
-# Terminate already running bar instances
-# If all your bars have ipc enabled, you can use
 polybar-msg cmd quit
-# Otherwise you can use the nuclear option:
-# killall -q polybar
-
-# Launch bar1 and bar2
-echo "---" | tee -a /tmp/polybar1.log /tmp/polybar2.log
-polybar example 2>&1 | tee -a /tmp/polybar1.log & disown
-polybar example 2>&1 | tee -a /tmp/polybar2.log & disown
-
+echo "---" | tee -a /tmp/polybar1.log
+polybar bar1 2>&1 | tee -a /tmp/polybar1.log & disown
 echo "Bars launched..."
 ```
 
@@ -246,43 +241,198 @@ in ~/.config/polybar/launch.sh
 - Set
 
 ```
-[module/battery]
-type = internal/battery
-full-at = 99
-low-at = 5
-battery = BAT1
-adapter = ACAD
-poll-interval = 5
+[colors]
+blue = #3498DB
+red = #E74C3C
+grey = #7F8C8D
+green = #2ECC71
+purple = #9B59B6
+yellow = #F39C12
+background = #00000000
 
-[module/target_ip]
-type = custom/script
-exec = echo "%{F#F0C674}Target%{F-} $(cat $HOME/.config/scripts/target/target_ip 2>/dev/null || echo '~')"
-interval = 1
-signal = 10
-```
+[bar/bar1]
+width = 98%
+height = 5%
+offset-x = 1%
+module-margin-left = 2
+module-margin-right = 2
+background = ${colors.background}
+font-0 = Hack Nerd Font
+modules-left = wlan eth htb target
+modules-right = battery pulseaudio date
+modules-center = xworkspaces
 
-in ~/.config/polybar/config.ini
+[module/xworkspaces]
+type = internal/xworkspaces
+label-active = %name%
+label-active-foreground = ${colors.purple}
+label-active-padding = 1
+label-occupied = %name%
+label-occupied-padding = 1
+label-urgent = %name%
+label-urgent-background = ${colors.red}
+label-urgent-padding = 1
+label-empty = %name%
+label-empty-foreground = ${colors.grey}
+label-empty-padding = 1
 
-- Change to
-
-```
-modules-left = xworkspaces
-modules-right = filesystem pulseaudio xkeyboard memory cpu battery wlan eth target_ip date
-```
-
-in ~/.config/polybar/config.ini
-
-- Change to
-
-```
 [module/wlan]
-inherit = network-base
-interface-type = wireless
-interface = {NetworkCard}
-label-connected = %{F#F0C674}%ifname%%{F-} %local_ip%
+type = custom/script
+exec = $HOME/.config/scripts/connection/wlan.sh
+interval = 2
+
+[module/eth]
+type = custom/script
+exec = $HOME/.config/scripts/connection/eth.sh
+interval = 2
+
+[module/htb]
+type = custom/script
+exec = $HOME/.config/scripts/connection/htb.sh
+interval = 2
+
+[module/target]
+type = custom/script
+exec = echo "%{F#E74C3C}󰓾 %{F-}$(cat $HOME/.config/scripts/target/target.txt)"
+interval = 2
+
+[module/pulseaudio]
+type = internal/pulseaudio
+format-volume-prefix = "%{F#9B59B6}  %{F#FFFFFF}"
+label-muted = "%{F#E74C3C} %{F#FFFFFF}"
+
+[module/battery]
+type = custom/script
+exec = $HOME/.config/scripts/battery/battery.sh
+interval = 2
+
+[module/date]
+type = internal/date
+date = %{F#9B59B6}󰸗 %{F#FFFFFF}%b%e  %{F#9B59B6}󱑎 %{F#FFFFFF}%k:%M
+interval = 1
 ```
 
 in ~/.config/polybar/config.ini
+
+- Set
+
+```
+#!/bin/zsh
+
+if [ -z "$1" ]; then
+    echo "Uso: target {ip}"
+    return 1
+fi
+if [[ ! "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    echo "Error: La IP debe ser una dirección IPv4 válida."
+    return 1
+fi
+formatted_ip="%{F#E74C3C}$1%{F#FFFFFF}"
+echo "$formatted_ip" > $HOME/.config/scripts/target/target.txt
+```
+
+in ~/.config/scripts/target/target.sh
+
+- Set
+
+```
+#!/bin/zsh
+
+echo "%{F#BDC3C7}No target%{F#FFFFFF}" > $HOME/.config/scripts/target/target.txt
+```
+
+in ~/.config/scripts/target/untarget.sh
+
+- Set
+
+```
+#!/bin/zsh
+
+ip_address=$(/usr/bin/ip addr show {WirelessCard} | grep 'inet ' | awk '{print $2}' | cut -d/ -f1)
+if [ -z "$ip_address" ]; then
+    echo "%{F#E74C3C}󰖪 %{F#FFFFFF}%{F#BDC3C7}Disconnected%{F#FFFFFF}"
+else
+    echo "%{F#9B59B6}󰖩 %{F#FFFFFF}$ip_address"
+fi
+```
+
+in ~/.config/scripts/connection/wlan.sh
+
+- Set
+
+```
+#!/bin/zsh
+
+ip_address=$(/usr/bin/ip addr show {EthernetNetworkCard} | grep 'inet ' | awk '{print $2}' | cut -d/ -f1)
+if [ -z "$ip_address" ]; then
+    echo "%{F#E74C3C}󰈀 %{F#FFFFFF}%{F#BDC3C7}Disconnected%{F#FFFFFF}"
+else
+    echo "%{F#9B59B6}󰈀 %{F#FFFFFF}$ip_address"
+fi
+```
+
+in ~/.config/scripts/connection/eth.sh
+
+- Set
+
+```
+#!/bin/zsh
+
+if /usr/bin/ip link show {HTBNetworkCard} > /dev/null 2>&1; then
+    ip_address=$(/usr/bin/ip addr show {HTBNetworkCard} | grep 'inet ' | awk '{print $2}' | cut -d/ -f1)
+else
+    ip_address=""
+fi
+if [ -z "$ip_address" ]; then
+    echo "%{F#2ECC71}󰆧 %{F#FFFFFF}%{F#BDC3C7}Disconnected%{F#FFFFFF}"
+else
+    echo "%{F#2ECC71}󰆧 %{F#FFFFFF}%{F#2ECC71}$ip_address%{F#FFFFFF}"
+fi
+```
+
+in ~/.config/scripts/connection/htb.sh
+
+- Set
+
+```
+#!/bin/zsh
+
+battery_level=$(cat /sys/class/power_supply/{BAT}/capacity)
+charging_status=$(cat /sys/class/power_supply/{ACAD}/online)
+get_battery_icon() {
+    if [ $1 -lt 10 ]; then
+        echo "%{F#E74C3C}󰁺%{F#FFFFFF}"
+    elif [ $1 -lt 20 ]; then
+        echo "%{F#E74C3C}󰁻%{F#FFFFFF}"
+    elif [ $1 -lt 30 ]; then
+        echo "%{F#E74C3C}󰁼%{F#FFFFFF}"
+    elif [ $1 -lt 40 ]; then
+        echo "%{F#F39C12}󰁽%{F#FFFFFF}"
+    elif [ $1 -lt 50 ]; then
+        echo "%{F#F39C12}󰁾%{F#FFFFFF}"
+    elif [ $1 -lt 60 ]; then
+        echo "%{F#F39C12}󰁿%{F#FFFFFF}"
+    elif [ $1 -lt 70 ]; then
+        echo "%{F#2ECC71}󰂀%{F#FFFFFF}"
+    elif [ $1 -lt 80 ]; then
+        echo "%{F#2ECC71}󰂁%{F#FFFFFF}"
+    elif [ $1 -lt 90 ]; then
+        echo "%{F#2ECC71}󰂂%{F#FFFFFF}"
+    else
+        echo "%{F#2ECC71}󰁹%{F#FFFFFF}"
+    fi
+}
+get_charging_icon() {
+    if [ $1 -eq 1 ]; then
+        echo "%{F#9B59B6}󰂄%{F#FFFFFF}"
+    else
+        echo "$(get_battery_icon $battery_level)"
+    fi
+}
+echo "$(get_charging_icon $charging_status) $battery_level%"
+```
+
+in ~/.config/scripts/battery/battery.sh
 
 ### Setting Picom
 
@@ -296,37 +446,6 @@ in ~/.config/polybar/config.ini
 - mkdir ~/.config/wallpapers
 
 ### Setting Target
-
-- mkdir -p ~/.config/scripts/target && touch ~/.config/scripts/target/target.sh && touch ~/.config/scripts/target/untarget.sh && chmod +x ~/.config/scripts/target/\*
-- Set
-
-```
-#!/bin/zsh
-
-if [ -z "$1" ]; then
-  echo "Uso: target {ip}"
-  return 1
-fi
-
-if [[ ! "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-  echo "Error: La IP debe ser una dirección IPv4 válida."
-  return 1
-fi
-
-echo "$1" > $HOME/.config/scripts/target/target_ip
-```
-
-in ~/.config/scripts/target/target.sh
-
-- Set
-
-```
-#!/bin/zsh
-
-echo "~" > $HOME/.config/scripts/target/target_ip
-```
-
-in ~/.config/scripts/target/untarget.sh
 
 ### Setting Grub
 
@@ -364,13 +483,16 @@ in ~/.zshrc
 - base-devel - Development tools and libraries
 - chromium - Web browsing (RECOMMENDED)
 - code - Source code editing
+- dosfstools - Tools to create and check MS-DOS FAT file systems
 - feh - Image viewer and background setter (RECOMMENDED)
 - firefox - Web browsing (RECOMMENDED)
 - gimp - Image and graphics editing
 - i3lock - Screen locking (RECOMMENDED)
 - keepass - Password management
 - kdenlive - Video editing
+- man-db - Manual page utilities
 - neofetch - Displaying system information
+- openvpn - Virtual Private Network (VPN) solution
 - pavucontrol - Audio control
 - pulseaudio - Sound server (RECOMMENDED)
 - qbittorrent - Torrent file downloading
@@ -380,3 +502,7 @@ in ~/.zshrc
 - vlc - Media file playback
 - xclip - Clipboard manager (RECOMMENDED)
 - xorg-xrandr - Display configuration (RECOMMENDED)
+
+## ADDITIONAL FEATURES
+
+- If the computer's time is changed, this command will probably solve it: `sudo timedatectl set-ntp true`
