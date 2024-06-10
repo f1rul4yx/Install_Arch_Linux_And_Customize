@@ -113,15 +113,42 @@
 - Change to `greeter-session=lightdm-webkit2-greeter` in /etc/lightdm/lightdm.conf
 - Change to `user-session=bspwm` in /etc/lightdm/lightdm.conf
 
-### Setting BSPWM
+### First Setting BSPWM
 
 - mkdir -p ~/.config/bspwm && cp /usr/share/doc/bspwm/examples/bspwmrc ~/.config/bspwm/
+- Set `setxkbmap -layout es` in ~/.config/bspwm/bspwmrc
+
+### First Setting Sxhkd
+
+- mkdir ~/.config/sxhkd && cp /usr/share/doc/bspwm/examples/sxhkdrc ~/.config/sxhkd/
+- Change to `/usr/bin/kitty` in ~/.config/sxhkd/sxhkdrc
+
+### First Setting Kitty
+
+- mkdir ~/.config/kitty && cp /usr/share/doc/kitty/kitty.conf ~/.config/kitty/
+
+### Exit Chroot and Reboot
+
+- exit
+- exit
+- umount -R /mnt
+- reboot
+
+### Enable NetworkManager
+
+- sudo systemctl enable NetworkManager
+- sudo systemctl start NetworkManager
+- nmcli radio wifi on
+- nmcli dev wifi list
+- nmcli dev wifi connect {SSID} password {password} ifname {NetworkCard}
+
+### Setting BSPWM
+
 - Change to `bspc monitor -d          ` in ~/.config/bspwm/bspwmrc
 - Change to `bspc config border_width 0` in ~/.config/bspwm/bspwmrc
 - Set
 
 ```
-setxkbmap -layout es
 $HOME/.config/polybar/launch.sh
 picom &
 feh --bg-scale $HOME/.config/wallpapers/wallpaper.png
@@ -132,8 +159,6 @@ in ~/.config/bspwm/bspwmrc
 
 ### Setting Sxhkd
 
-- mkdir ~/.config/sxhkd && cp /usr/share/doc/bspwm/examples/sxhkdrc ~/.config/sxhkd/
-- Change to `/usr/bin/kitty` in ~/.config/sxhkd/sxhkdrc
 - Change to `super + shift + m` in ~/.config/sxhkd/sxhkdrc
 - Change to `/usr/bin/dmenu_run -b -i -nb "#222222" -nf "#ffffff" -sb "#9b59b6" -sf "#ffffff"` in ~/.config/sxhkd/sxhkdrc
 - Change to `Left,Down,Up,Right` in ~/.config/sxhkd/sxhkdrc
@@ -173,26 +198,10 @@ in ~/.config/sxhkd/sxhkdrc
 
 ### Setting Kitty
 
-- mkdir ~/.config/kitty && cp /usr/share/doc/kitty/kitty.conf ~/.config/kitty/
 - Change to `background #222222` in ~/.config/kitty/kitty.conf
 - Change to `background_opacity 0.85` in ~/.config/kitty/kitty.conf
 - Change to `window_padding_width 20` in ~/.config/kitty/kitty.conf
 - Change to `cursor_shape beam` in ~/.config/kitty/kitty.conf
-
-### Exit Chroot and Reboot
-
-- exit
-- exit
-- umount -R /mnt
-- reboot
-
-### Enable NetworkManager
-
-- sudo systemctl enable NetworkManager
-- sudo systemctl start NetworkManager
-- nmcli radio wifi on
-- nmcli dev wifi list
-- nmcli dev wifi connect {SSID} password {password} ifname {NetworkCard}
 
 ### Setting ZSH
 
@@ -444,8 +453,6 @@ in ~/.config/scripts/battery/battery.sh
 ### Setting Feh
 
 - mkdir ~/.config/wallpapers
-
-### Setting Target
 
 ### Setting Grub
 
